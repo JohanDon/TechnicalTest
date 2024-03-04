@@ -4,8 +4,8 @@ const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-7cb6c5c1-e502-4
 
 const createOrUpdateContact = async (req, res) => {
 	try {
-		console.log(req.body.vid);
-		//await hubspotClient.crm.contacts.basicApi.getById(req.body.vid)
+		const responseContact = await hubspotClient.crm.contacts.basicApi.getById(req.body.vid)
+		console.log(responseContact);
 		const properties = {
 			properties: {
 				character_id: req.body.properties.character_id.value,
@@ -15,11 +15,9 @@ const createOrUpdateContact = async (req, res) => {
 				character_species: req.body.properties.character_species.value,
 				character_gender: req.body.properties.character_gender.value
 			}
-		}
-
-		console.log(properties);
-		/* const updateContactResponse = await hubspotClient.crm.contacts.basicApi.update(req.body.vid, properties);
-		console.log(updateContactResponse); */
+		};
+		const updateContactResponse = await hubspotClient.crm.contacts.basicApi.update(req.body.vid, properties);
+		console.log(updateContactResponse);
 		res.json({ success: true, message: 'Contact updated successfully' });
 	} catch (error) {
 		if (error && error.code === 404) {
