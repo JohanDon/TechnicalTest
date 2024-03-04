@@ -37,7 +37,7 @@ const createOrUpdateCompany = async (req, res) => {
 		console.log(responseCompany);
 
 		if (responseCompany.results.length > 0) {
-			const updateContactResponse = await hubspotClient.crm.companies.basicApi.update(req.body.vid, properties);
+			const updateContactResponse = await hubspotClient.crm.companies.basicApi.update(responseCompany.results.at(0).id, properties);
 			console.log(updateContactResponse);
 			res.json({ success: true, message: 'Company updated successfully' });
 		} else {

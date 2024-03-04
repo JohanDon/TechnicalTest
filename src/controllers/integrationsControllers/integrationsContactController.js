@@ -11,7 +11,8 @@ const createSearchContact = (value) => {
 				operator: "EQ",
 				value: value
 			}]
-		}]
+		}],
+		"limit": 1
 	}
 }
 
@@ -32,12 +33,15 @@ const createOrUpdateContact = async (req, res) => {
 	try {
 		const searchContact = createSearchContact(req.body.properties.character_id.value);
 		const properties = createPropertiesContact(req.body.properties);
-		
+
 		const responseContact = await hubspotClient.crm.contacts.searchApi.doSearch(searchContact)
-		console.log(responseContact);
+		console.log(responseContact.properties);
+
+		console.log(searchContact);
+		console.log(properties);
 
 		if (responseContact.results.length > 0) {
-			const updateContactResponse = await hubspotClient.crm.contacts.basicApi.update(req.body.vid, properties);
+			const updateContactResponse = await hubspotClient.crm.contacts.basicApi.update(responseContact.results.at(0).id, properties);
 			console.log(updateContactResponse);
 			res.json({ success: true, message: 'Contact updated successfully' });
 		} else {
