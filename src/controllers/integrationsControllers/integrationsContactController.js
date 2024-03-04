@@ -19,17 +19,20 @@ const createSearchContact = (value) => {
 const createPropertiesContact = (bodyProperties) => {
 	return properties = {
 		properties: {
-			character_id: bodyProperties.character_id.value,
-			firstname: bodyProperties.firstname.value,
-			lastname: bodyProperties.lastname.value,
-			status_character: bodyProperties.status_character.value,
-			character_species: bodyProperties.character_species.value,
-			character_gender: bodyProperties.character_gender.value
+			character_id: bodyProperties.character_id !== undefined ? bodyProperties.character_id.value : "",
+			firstname: bodyProperties.firstname !== undefined ? bodyProperties.firstname.value : "",
+			lastname: bodyProperties.lastname !== undefined ? bodyProperties.lastname.value : "",
+			status_character: bodyProperties.status_character !== undefined ? bodyProperties.status_character.value : "",
+			character_species: bodyProperties.character_species !== undefined ? bodyProperties.character_species.value : "",
+			character_gender: bodyProperties.character_gender !== undefined ? bodyProperties.character_gender.value : ""
 		}
 	}
 }
 
 const createOrUpdateContact = async (req, res) => {
+
+	console.log(req.body.properties.lastname !== undefined ? req.body.properties.lastname.value : "");
+
 	try {
 		const searchContact = createSearchContact(req.body.properties.character_id.value);
 		const properties = createPropertiesContact(req.body.properties);

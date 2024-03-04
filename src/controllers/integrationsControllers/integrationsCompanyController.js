@@ -20,11 +20,11 @@ const createSearchCompany = (value) => {
 const createPropertiesCompany = (bodyProperties) => {
 	return properties = {
 		properties: {
-			location_id: bodyProperties.location_id.value,
-			name: bodyProperties.name.value,
-			location_type: bodyProperties.location_type.value,
-			dimension: bodyProperties.dimension.value,
-			creation_date: formatDate(bodyProperties.creation_date.value)
+			location_id: bodyProperties.location_id !== undefined ? bodyProperties.location_id.value : "",
+			name: bodyProperties.name !== undefined ? bodyProperties.name.value : "",
+			location_type: bodyProperties.location_type !== undefined ? bodyProperties.location_type.value : "",
+			dimension: bodyProperties.dimension !== undefined ? bodyProperties.dimension.value : "",
+			creation_date: formatDate(bodyProperties.creation_date !== undefined ? bodyProperties.creation_date.value : "")
 		}
 	}
 }
