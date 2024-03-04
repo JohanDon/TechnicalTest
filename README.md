@@ -2,7 +2,7 @@
 Here you can find the end points for the migration and integration process
 
 
-## Uso
+## Use
 ### Migration
 To execute the migration process, just go to the following route https://technicaltest.onrender.com/migration and the migration process will begin to run. If you wish, you can also run this postman, to do this consult the [Api Documentation](https://github.com/JohanDon/TechnicalTest/blob/master/README.md#api-documentation).
 .
