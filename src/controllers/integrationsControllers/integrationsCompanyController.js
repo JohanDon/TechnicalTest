@@ -12,7 +12,8 @@ const createSearchCompany = (value) => {
 				operator: "EQ",
 				value: value
 			}]
-		}]
+		}],
+		"limit": 1
 	}
 }
 
