@@ -30,7 +30,9 @@ const createPropertiesCompany = (bodyProperties) => {
 
 const createOrUpdateCompany = async (req, res) => {
 	try {
-		const searchCompany = createSearchCompany(req.body.properties.location_id.value)
+
+		console.log(req.body);
+		/* const searchCompany = createSearchCompany(req.body.properties.location_id.value)
 		const properties = createPropertiesCompany(req.body.properties);
 
 		const responseCompany = await hubspotClient.crm.contacts.searchApi.doSearch(searchCompany);
@@ -44,7 +46,7 @@ const createOrUpdateCompany = async (req, res) => {
 			const createContactResponse = await hubspotClient.crm.companies.basicApi.create(properties);
 			console.log(createContactResponse);
 			res.json({ success: true, message: 'Company created successfully' });
-		}
+		} */
 
 	} catch (error) {
 		console.error(error);
