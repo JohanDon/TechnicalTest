@@ -5,28 +5,29 @@ const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-7cb6c5c1-e502-4
 
 const createOrUpdateCompany = async (req, res) => {
 	try {
-		await hubspotClient.crm.companies.basicApi.getById(req.body.id)
+		const responseCompany = await hubspotClient.crm.companies.basicApi.getById(req.body.vid);
+		console.log(responseCompany);
 		const properties = {
 			properties: {
-				location_id: req.body.properties.location_id,
-				name: req.body.properties.name,
-				location_type: req.body.properties.location_type,
-				dimension: req.body.properties.dimension,
-				creation_date: formatDate(req.body.properties.creation_date)
+				location_id: req.body.properties.location_id.value,
+				name: req.body.properties.name.value,
+				location_type: req.body.properties.location_type.value,
+				dimension: req.body.properties.dimension.value,
+				creation_date: formatDate(req.body.properties.creation_date.value)
 			}
 		}
-		const updateContactResponse = await hubspotClient.crm.companies.basicApi.update(req.body.id, properties);
+		const updateContactResponse = await hubspotClient.crm.companies.basicApi.update(req.body.vid, properties);
 		console.log(updateContactResponse);
 		res.json({ success: true, message: 'Company updated successfully' });
 	} catch (error) {
 		if (error && error.code === 404) {
 			const properties = {
 				properties: {
-					location_id: req.body.properties.location_id,
-					name: req.body.properties.name,
-					location_type: req.body.properties.location_type,
-					dimension: req.body.properties.dimension,
-					creation_date: formatDate(req.body.properties.creation_date)
+					location_id: req.body.properties.location_id.value,
+					name: req.body.properties.name.value,
+					location_type: req.body.properties.location_type.value,
+					dimension: req.body.properties.dimension.value,
+					creation_date: formatDate(req.body.properties.creation_date.value)
 				}
 			}
 			const createContactResponse = await hubspotClient.crm.companies.basicApi.create(properties);
