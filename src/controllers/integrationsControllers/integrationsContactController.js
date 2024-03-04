@@ -4,6 +4,7 @@ const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-7cb6c5c1-e502-4
 
 const createOrUpdateContact = async (req, res) => {
 	try {
+		console.log(req.body);
 		await hubspotClient.crm.contacts.basicApi.getById(req.body.id)
 		const properties = {
 			properties: {
