@@ -1,22 +1,22 @@
 const rickAndMortyApi = require('rickmortyapi')
 const hubspot = require('@hubspot/api-client');
-const { formatDate } = require('../../utils/utils')
+const { formatDate, splitArrayByBatch } = require('../../utils/utils')
 
 const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-ebf942e1-2318-49ed-bc93-be76d2e9584c" });
 
 
 const getCompaniesApi = async (contacts) => {
     const idLocationsCreated = new Array();
-    const CompaniesApi = new Array();
+    const companiesApi = new Array();
     try {
         for (const contact of contacts) {
             if (contact.properties.id_location !== "" && !idLocationsCreated.includes(contact.properties.id_location)) {
                 idLocationsCreated.push(contact.properties.id_location)
                 const response = await rickAndMortyApi.getLocation(parseInt(contact.properties.id_location));
-                CompaniesApi.push(response.data);
+                companiesApi.push(response.data);
             }
         }
-        return CompaniesApi;
+        return companiesApi;
     } catch (error) {
         console.log(error);
     }
@@ -39,9 +39,23 @@ const mapperCompanies = (mapperCompanies) => {
 }
 
 const createCompaniesHuspot = async (companies) => {
+
     try {
-        const createCompaniesResponse = await hubspotClient.crm.companies.batchApi.create({ inputs: companies });
-        return createCompaniesResponse.results;
+        let createCompaniesResponse = new Array();
+
+        if (companies.length > 100) {
+            const companiesSplitted = splitArrayByBatch(companies, 100);
+            console.log(companiesSplitted);
+    
+            for (const companySplitted of companiesSplitted) {
+                createCompaniesResponse = createCompaniesResponse.concat((await hubspotClient.crm.companies.batchApi.create({ inputs: companySplitted })).results);
+            }
+            
+        } else{
+            createCompaniesResponse = (await hubspotClient.crm.companies.batchApi.create({ inputs: companies })).results
+        }
+
+        return createCompaniesResponse;
     } catch (error) {
         console.log(error);
     }

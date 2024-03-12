@@ -1,6 +1,6 @@
 const rickAndMortyApi = require('rickmortyapi')
 const hubspot = require('@hubspot/api-client');
-const { isPrimeNumber, splitName, splitUrlLocation } = require('../../utils/utils')
+const { isPrimeNumber, splitName, getLastNumberUrl, splitArrayByBatch } = require('../../utils/utils')
 
 const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-ebf942e1-2318-49ed-bc93-be76d2e9584c" });
 
@@ -8,7 +8,20 @@ const hubspotClient = new hubspot.Client({ accessToken: "pat-na1-ebf942e1-2318-4
 const getContactsApi = async () => {
     try {
         const response = await rickAndMortyApi.getCharacters();
-        return response.data.results;
+        let nextUrlPage = response.data.info.next;
+        let contactsApi = response.data.results;
+        while (nextUrlPage !== null) {
+            const page = getLastNumberUrl(nextUrlPage, "=");
+            console.log(`Next url ==> ${nextUrlPage}`);
+            console.log(`Next url ==> ${page}`);
+
+
+            const responsePage = await rickAndMortyApi.getCharacters({ page: page });
+            contactsApi = contactsApi.concat(responsePage.data.results);
+            nextUrlPage = responsePage.data.info.next;
+        }
+        console.log(`Next url ==> ${nextUrlPage}`)
+        return contactsApi;
     } catch (error) {
         console.log(error);
     }
@@ -35,7 +48,7 @@ const mapperContacts = (contactsMapper) => {
                 status_character: contactMap.status,
                 character_species: contactMap.species,
                 character_gender: contactMap.gender,
-                id_location: splitUrlLocation(contactMap.location.url)
+                id_location: getLastNumberUrl(contactMap.location.url, "/")
             }
         }
     });
@@ -45,10 +58,23 @@ const mapperContacts = (contactsMapper) => {
 
 
 const createContactsHuspot = async (contactsSend) => {
+
     try {
-        for (const contactSend of contactsSend) {delete contactSend.properties.id_location}
-        const createContactResponse = await hubspotClient.crm.contacts.batchApi.create({ inputs: contactsSend });
-        return createContactResponse.results;
+        let createContactResponse = new Array();
+        for (const contactSend of contactsSend) { delete contactSend.properties.id_location }
+
+        if (contactsSend.length > 100) {
+            const contactsSplitted = splitArrayByBatch(contactsSend, 100);
+            console.log(contactsSplitted);
+    
+            for (const contactSplitted of contactsSplitted) {
+                createContactResponse = createContactResponse.concat((await hubspotClient.crm.contacts.batchApi.create({ inputs: contactSplitted })).results);
+            }
+        } else {
+            createContactResponse = (await hubspotClient.crm.contacts.batchApi.create({ inputs: contactsSend })).results
+        }
+
+        return createContactResponse;
     } catch (error) {
         console.log(error);
     }

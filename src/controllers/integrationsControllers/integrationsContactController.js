@@ -30,9 +30,6 @@ const createPropertiesContact = (bodyProperties) => {
 }
 
 const createOrUpdateContact = async (req, res) => {
-
-	console.log(req.body.properties.lastname !== undefined ? req.body.properties.lastname.value : "");
-
 	try {
 		const searchContact = createSearchContact(req.body.properties.character_id.value);
 		const properties = createPropertiesContact(req.body.properties);
