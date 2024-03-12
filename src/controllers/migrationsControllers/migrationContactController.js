@@ -12,10 +12,6 @@ const getContactsApi = async () => {
         let contactsApi = response.data.results;
         while (nextUrlPage !== null) {
             const page = getLastNumberUrl(nextUrlPage, "=");
-            console.log(`Next url ==> ${nextUrlPage}`);
-            console.log(`Next url ==> ${page}`);
-
-
             const responsePage = await rickAndMortyApi.getCharacters({ page: page });
             contactsApi = contactsApi.concat(responsePage.data.results);
             nextUrlPage = responsePage.data.info.next;

@@ -10,7 +10,6 @@ const migrationsProcess = async (req, res) => {
         const contactsSend = await migrationContact.mapperContacts(contactsFiltered);
         console.log(contacts);
 
-
         const companiesApi = await migrationCompany.getCompaniesApi(contacts);
         const companies = await migrationCompany.mapperCompanies(companiesApi);
         console.log(companies);
